@@ -1,0 +1,35 @@
+name: Deploy to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch if it's not 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # or the version you are using
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to Cloudflare Workers
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}  # Set this in your repository secrets
+        run: |
+          npm run deploy
+
+      - name: Set Secrets for User Authentication
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}  # Use your API token here
+        run: |
+          wrangler secret put USERNAME
+          wrangler secret put PASSWORD
